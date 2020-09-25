@@ -107,12 +107,22 @@ Use this to load an exist pipeline, without specify file name, let the program t
 pipeline.load('pipeline', save_dir + 'vgg_test/')
 ```
 
+When you are ready to train, simply use the following code to start training (and testing).
+
+```python
+pipeline(end_epoch=30)
+# or
+pipeline(30)
+# train from epoch=pipline.start_epoch to epoch=end_epoch
+```
+
 Use this to load a exist history, this history is not mean to serve as continue training. If you want to continue training, load pipeline or model instead of history.
 ```python
 pipeline.load('history', save_dir + 'vgg_test/history 20200923_225937 vgg_test epoch_20.hist')
 ```
 
 Use this to report the result (train and test).
+
 ```python
 pipeline.report()
 ```
