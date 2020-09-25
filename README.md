@@ -35,7 +35,7 @@ DLpipeline(Saver, Executor, Reporter, ProgressBar, FileNameManager, PytorchThing
 
 test.ipynb shows how to use it.
 
-### Basic operation
+### Pipeline Prepare
 
 You might have to modify *Reporter* and *Executor* to fit your problem. Then
 
@@ -43,7 +43,51 @@ You might have to modify *Reporter* and *Executor* to fit your problem. Then
 from dlpipeline import DLpipeline, Executor, Progbar, Reporter, Saver, FileNameManager
 ```
 
+You can use a dict to initialize the pipeline.
+
+```python
+basic_config = {'executor': Executor(),
+                'progressbar': Progbar(dynamic = True),
+                'reporter': Reporter(labels = labels, 
+                                     need_confusion_matrix = True,
+                                     output_to_score_fun = output_to_score_fun, 
+                                     report_interval = 0,
+                                     show_train_report = False,
+                                     summary_fun = summary_fun),
+                'saver': Saver(save_dir = save_dir,
+                               save_meta_file = True,
+                               save_ckpt_model = True, 
+                               save_val_model = True, 
+                               save_final_model = True,
+                               save_final_optim = True,
+                               save_interval = 5, 
+                               test_model_use = 'final', 
+                               save_history = True,
+                               save_train_report = False,
+                               save_test_report = True),
+                'file_name_manager': FileNameManager(),
+                'device': device,
+                'criterion': nn.CrossEntropyLoss(),
+                'trainloader': trainloader,
+                'valloader': testloader,
+                'testloader': testloader,
+               }
+
+pipeline = DLpipeline(**basic_config)
+```
+
+Then setup model and optimizer.
+
+```python
+pipeline.setup(model = model, model_name = 'vgg', optimizer = optimizer)
+```
+
+You can modifie the pipeline at any time using *pipeline.setup()*.
+
+### Basic Operation
+
 Use this to create a new pipeline, it will create a new folder under *saver.save\_dir*. Then every thing will be saved in this folder (if enable save). The name of the created folder is controlled by FileNameManager, default to time+model_name.
+
 ```python
 pipeline.create_pipeline()
 ```
@@ -91,7 +135,7 @@ pipeline.load('pipeline', ...)
 pipeline.create_pipeline(...)
 ```
 
-More info, can be explore by using *\_\_dict\_\_*
+More infomation can be explore by using *\_\_dict\_\_*
 
 ```python
 pipeline.__dict__
